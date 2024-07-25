@@ -295,7 +295,7 @@
 					$('<div class="close">Close</div>')
 						.appendTo($this)
 						.on('click', function() {
-							location.hash = '';
+							history.pushState("", document.title, window.location.pathname + window.location.search);
 						});
 
 				// Prevent clicks from inside article from bubbling.
