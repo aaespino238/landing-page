@@ -296,6 +296,8 @@
 						.appendTo($this)
 						.on('click', function() {
 							history.pushState("", document.title, window.location.pathname + window.location.search);
+
+							$main._hide();
 						});
 
 				// Prevent clicks from inside article from bubbling.
