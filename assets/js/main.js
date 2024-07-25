@@ -117,6 +117,10 @@
 
 					// Lock.
 						locked = true;
+					
+					if (typeof initial == 'undefined' || initial !== true) {
+						history.pushState({id: id}, $article.find('h2').text(), '/' + id);
+					}
 
 				// Article already visible? Just swap articles.
 					if ($body.hasClass('is-article-visible')) {
@@ -294,10 +298,10 @@
 				// Close.
 					$('<div class="close">Close</div>')
 						.appendTo($this)
-						.on('click', function() {
-							history.pushState("", document.title, window.location.pathname + window.location.search);
-
-							$main._hide();
+						.on('click', function(event) {
+							event.preventDefault();
+							event.stopPropagation();
+							$main._hide(true);
 						});
 
 				// Prevent clicks from inside article from bubbling.
@@ -305,6 +309,14 @@
 						event.stopPropagation();
 					});
 
+			});
+
+			window.addEventListener('popstate', function(event) {
+				if (event.state && event.state.id) {
+					$main._show(event.state.id, true);
+				} else {
+					$main._hide(false);
+				}
 			});
 
 		// Events.
@@ -390,14 +402,15 @@
 		// Initialize.
 
 			// Hide main, articles.
-				$main.hide();
-				$main_articles.hide();
+			$main.hide();
+			$main_articles.hide();
 
 			// Initial article.
-				if (location.hash != ''
-				&&	location.hash != '#')
-					$window.on('load', function() {
-						$main._show(location.hash.substr(1), true);
-					});
+			$(window).on('load', function() {
+				var path = window.location.pathname.substr(1);
+				if (path && $main_articles.filter('#' + path).length > 0) {
+					$main._show(path, true);
+				}
+			});
 
 })(jQuery);
